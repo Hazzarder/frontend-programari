@@ -40,8 +40,7 @@ export default {
       pb: new PocketBase("http://127.0.0.1:8090"),
       calendarOptions: {
         initialView: "resourceTimeGridDay",
-        contentHeight: "auto",
-        height: "auto",
+
         plugins: [resourceTimeGridPlugin, interactionPlugin],
         resources: [],
         events: [],
@@ -51,6 +50,8 @@ export default {
           minute: "2-digit",
           hour12: false,
         },
+        slotMinTime: "08:00:00",
+        slotMaxTime: "22:00:00",
         allDaySlot: false,
         eventClick: this.handleEventClick,
       },
