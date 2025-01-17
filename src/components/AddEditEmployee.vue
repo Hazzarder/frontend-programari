@@ -33,7 +33,7 @@ export default {
       formData: {
         name: "",
       },
-      pb: new PocketBase("http://127.0.0.1:8090"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
     };
   },
   methods: {

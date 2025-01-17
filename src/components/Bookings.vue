@@ -33,14 +33,14 @@ export default {
   },
   data() {
     return {
+      date: new Date(),
       bookings: [],
       resources: [],
       isModalOpen: false,
       isEditModalOpen: false,
-      pb: new PocketBase("http://127.0.0.1:8090"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
       calendarOptions: {
         initialView: "resourceTimeGridDay",
-
         plugins: [resourceTimeGridPlugin, interactionPlugin],
         resources: [],
         events: [],
@@ -54,13 +54,20 @@ export default {
         slotMaxTime: "22:00:00",
         allDaySlot: false,
         eventClick: this.handleEventClick,
+        datesSet: this.handleDatesSet, // Add this line
       },
     };
   },
-  methods: {
-    async getBookings() {
-      const records = await this.pb.collection("bookings").getFullList({});
 
+  methods: {
+    async getBookings(date) {
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+      const records = await this.pb.collection("bookings").getFullList({
+        filter: `startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
+      });
       this.calendarOptions.events = records.map((record) => ({
         id: record.id,
         resourceId: record.resourceId,
@@ -80,6 +87,10 @@ export default {
         title: record.name,
       }));
     },
+    handleDatesSet(info) {
+      this.date = info.start;
+      this.getBookings(this.date);
+    },
     openAddBookingModal() {
       this.isModalOpen = true;
     },
@@ -89,15 +100,15 @@ export default {
     },
     closeModal() {
       this.isModalOpen = false;
-      this.getBookings();
+      this.getBookings(this.date);
     },
     closeEditModal() {
       this.isEditModalOpen = false;
-      this.getBookings();
+      this.getBookings(this.date);
     },
   },
   mounted() {
-    this.getBookings();
+    this.getBookings(this.date);
     this.getResources();
   },
 };
