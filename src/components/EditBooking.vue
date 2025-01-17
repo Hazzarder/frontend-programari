@@ -33,6 +33,7 @@
                 v-model="formData.resourceId"
                 :items="employees"
                 item-title="name"
+                item-value="id"
                 :rules="[(v) => !!v || 'Resource is required']"
                 required
               ></v-select> </v-col
