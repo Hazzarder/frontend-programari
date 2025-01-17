@@ -5,6 +5,12 @@
     v-if="modalIsOpen"
     @close-and-refresh-empolyees="closeDialog()"
   />
+  <EditEmployee
+    v-if="editModalIsOpen"
+    :employeeId="selectedId"
+    :name="selectedEmployeeName"
+    @close-and-refresh-empolyees-from-edit="closeEditDialog()"
+  />
   <v-table>
     <thead>
       <tr>
@@ -20,7 +26,13 @@
     <tbody>
       <tr v-for="employee in employees" :key="employee.id">
         <td>{{ employee.name }}</td>
+        <td>{{ employee.email }}</td>
         <td>
+          <v-icon
+            @click="openEditModal(employee.id, employee.name)"
+            color="primary"
+            >mdi-pencil</v-icon
+          >
           <v-icon @click="deleteEmployee(employee.id)" color="error"
             >mdi-delete</v-icon
           >
@@ -32,17 +44,23 @@
 <script>
 import PocketBase from "pocketbase";
 import AddEditEmployee from "./AddEditEmployee.vue";
+import EditEmployee from "./EditEmployee.vue";
 export default {
   components: {
     AddEditEmployee,
+    EditEmployee,
   },
   data() {
     return {
       modalIsOpen: false,
+      editModalIsOpen: false,
+      selectedId: "",
+      selectedEmployeeName: "",
       employees: [],
-      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io"),
       tableColumns: [
         { text: "Name", value: "name" },
+        { text: "Email", value: "email" },
         { text: "Actions", value: "actions" },
       ],
     };
@@ -55,8 +73,17 @@ export default {
       await this.pb.collection("employees").delete(id);
       this.getEmployees();
     },
+    openEditModal(id, name) {
+      this.editModalIsOpen = true;
+      this.selectedId = id;
+      this.selectedEmployeeName = name;
+    },
     closeDialog() {
       this.modalIsOpen = false;
+      this.getEmployees();
+    },
+    closeEditDialog() {
+      this.editModalIsOpen = false;
       this.getEmployees();
     },
   },

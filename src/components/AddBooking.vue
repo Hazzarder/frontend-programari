@@ -10,6 +10,7 @@
                 class="form-field"
                 v-model="formData.name"
                 label="Name"
+                required
                 variant="outlined"
               ></v-text-field>
             </v-col>
@@ -19,6 +20,7 @@
               <v-text-field
                 v-model="formData.typeOfActivity"
                 class="form-field"
+                required
                 label="Serviciu"
                 variant="outlined"
               ></v-text-field>
@@ -29,6 +31,7 @@
               <v-select
                 v-model="formData.resourceId"
                 class="form-field"
+                required
                 :items="employees"
                 item-title="name"
                 item-value="id"
@@ -40,8 +43,11 @@
           <v-row>
             <v-col cols="12">
               <VueDatePicker
+                required
                 v-model="formData.startTime"
                 :format="'dd/MM/yyyy - hh:mm'"
+                :max-date="formData.endTime"
+                v-bind:max-time="formData.endTime"
                 class="form-field"
               ></VueDatePicker>
             </v-col>
@@ -49,8 +55,11 @@
           <v-row>
             <v-col cols="12">
               <VueDatePicker
+                required
                 v-model="formData.endTime"
                 :format="'dd/MM/yyyy - hh:mm'"
+                :min-date="formData.startTime"
+                v-bind:min-time="formData.startTime"
                 class="form-field"
               ></VueDatePicker>
             </v-col>
@@ -76,7 +85,7 @@ export default {
   data() {
     return {
       dialog: true,
-      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io"),
       employees: [],
       formData: {
         name: "",

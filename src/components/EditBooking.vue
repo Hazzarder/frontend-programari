@@ -37,12 +37,14 @@
               ><VueDatePicker
                 v-model="formData.startTime"
                 :format="'dd/MM/yyyy - hh:mm'"
+                :max-date="formData.endTime"
               ></VueDatePicker></v-col
           ></v-row>
           <v-row
             ><v-col
               ><VueDatePicker
                 v-model="formData.endTime"
+                :min-date="formData.startTime"
                 :format="'dd/MM/yyyy - hh:mm'"
               ></VueDatePicker></v-col
           ></v-row>
@@ -78,7 +80,7 @@ export default {
         startTime: null,
         endTime: null,
       },
-      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
   },
   watch: {

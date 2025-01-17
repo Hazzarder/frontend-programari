@@ -11,10 +11,7 @@
       @close="closeEditModal()"
     />
   </div>
-  <FullCalendar
-    :options="calendarOptions"
-    class="full-calendar mt-5 mr-3 ml-3"
-  />
+  <FullCalendar :options="calendarOptions" class="full-calendar mt-5" />
 </template>
 
 <script>
@@ -38,7 +35,7 @@ export default {
       resources: [],
       isModalOpen: false,
       isEditModalOpen: false,
-      pb: new PocketBase("https://motzartiasi.pockethost.io/"),
+      pb: new PocketBase("https://motzartiasi.pockethost.io"),
       calendarOptions: {
         initialView: "resourceTimeGridDay",
         plugins: [resourceTimeGridPlugin, interactionPlugin],
@@ -54,7 +51,11 @@ export default {
         slotMaxTime: "22:00:00",
         allDaySlot: false,
         eventClick: this.handleEventClick,
-        datesSet: this.handleDatesSet, // Add this line
+        datesSet: this.handleDatesSet,
+        stickyHeaderDates: true,
+        stickyFooterScrollbar: true,
+        scrollTime: "00:00", // Ensure the calendar starts at the beginning of the day
+        resourceAreaWidth: 600, // Set a fixed width for the resource columns
       },
     };
   },
@@ -124,8 +125,5 @@ export default {
 }
 
 @media (max-width: 600px) {
-  .full-calendar {
-    height: 1000px; /* Height for screens smaller than 600px */
-  }
 }
 </style>
