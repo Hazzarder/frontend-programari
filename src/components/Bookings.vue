@@ -19,7 +19,7 @@ import AddBooking from "./AddBooking.vue";
 import EditBooking from "./EditBooking.vue";
 import PocketBase from "pocketbase";
 import FullCalendar from "@fullcalendar/vue3";
-import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
+import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 
 export default {
@@ -37,8 +37,8 @@ export default {
       isEditModalOpen: false,
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       calendarOptions: {
-        initialView: "resourceTimeGridDay",
-        plugins: [resourceTimeGridPlugin, interactionPlugin],
+        initialView: "resourceTimelineDay",
+        plugins: [resourceTimelinePlugin, interactionPlugin],
         resources: [],
         events: [],
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
@@ -52,10 +52,6 @@ export default {
         allDaySlot: false,
         eventClick: this.handleEventClick,
         datesSet: this.handleDatesSet,
-        stickyHeaderDates: true,
-        stickyFooterScrollbar: true,
-        scrollTime: "00:00", // Ensure the calendar starts at the beginning of the day
-        resourceAreaWidth: 600, // Set a fixed width for the resource columns
       },
     };
   },
@@ -122,8 +118,5 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-@media (max-width: 600px) {
 }
 </style>
