@@ -37,6 +37,7 @@ export default {
       isEditModalOpen: false,
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       calendarOptions: {
+        expandRows: true,
         initialView: "resourceTimelineDay",
         plugins: [resourceTimelinePlugin, interactionPlugin],
         resources: [],
@@ -49,9 +50,28 @@ export default {
         },
         slotMinTime: "08:00:00",
         slotMaxTime: "22:00:00",
-        allDaySlot: false,
+
         eventClick: this.handleEventClick,
         datesSet: this.handleDatesSet,
+        slotMinWidth: 40,
+        eventMinHeight: 150,
+        eventContent: function (arg) {
+          return {
+            html: `<div class="custom-event-content">
+              <p><strong>${arg.event.title}</strong></p>
+              <p>${arg.event.extendedProps.typeOfActivity}</p>
+              <p>${arg.event.start.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })} - ${arg.event.end.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            })}</p>
+            </div>`,
+          };
+        },
       },
     };
   },
@@ -118,5 +138,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.custom-event-content {
+  padding: 5px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 </style>

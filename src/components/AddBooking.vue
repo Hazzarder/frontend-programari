@@ -48,9 +48,7 @@
                   required
                   v-model="formData.startTime"
                   :format="'dd/MM/yyyy - hh:mm'"
-                  :max-date="formData.endTime"
                   :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
-                  v-bind:max-time="formData.endTime"
                   class="form-field"
                 ></VueDatePicker>
               </v-col>
@@ -62,9 +60,7 @@
                   required
                   v-model="formData.endTime"
                   :format="'dd/MM/yyyy - hh:mm'"
-                  :min-date="formData.startTime"
                   :rules="[(v) => !!v || 'Data de sfarsit este obligatorie']"
-                  v-bind:min-time="formData.startTime"
                   class="form-field"
                 ></VueDatePicker>
               </v-col>
