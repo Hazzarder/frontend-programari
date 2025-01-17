@@ -3,7 +3,7 @@
     <v-main>
       <v-app-bar app color="#00ca98">
         <p
-          class="nav-bar-link mr-5 ml-1"
+          class="nav-bar-link mr-5 ml-4"
           @click="this.$router.push('/employees')"
         >
           Angajati

@@ -1,75 +1,87 @@
 <template>
   <v-dialog v-model="dialog" max-width="500px">
     <v-card>
-      <v-card-title> Adauga programare noua </v-card-title>
+      <v-card-title class="text-center"> Adauga programare noua </v-card-title>
       <v-card-text>
         <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                class="form-field"
-                v-model="formData.name"
-                label="Name"
-                required
-                variant="outlined"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                v-model="formData.typeOfActivity"
-                class="form-field"
-                required
-                label="Serviciu"
-                variant="outlined"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-select
-                v-model="formData.resourceId"
-                class="form-field"
-                required
-                :items="employees"
-                item-title="name"
-                item-value="id"
-                label="Angajat"
-                variant="outlined"
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <VueDatePicker
-                required
-                v-model="formData.startTime"
-                :format="'dd/MM/yyyy - hh:mm'"
-                :max-date="formData.endTime"
-                v-bind:max-time="formData.endTime"
-                class="form-field"
-              ></VueDatePicker>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <VueDatePicker
-                required
-                v-model="formData.endTime"
-                :format="'dd/MM/yyyy - hh:mm'"
-                :min-date="formData.startTime"
-                v-bind:min-time="formData.startTime"
-                class="form-field"
-              ></VueDatePicker>
-            </v-col>
-          </v-row>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-row>
+              <v-col class="v-col-style"
+                ><label class="label-class">Nume client</label>
+                <v-text-field
+                  v-model="formData.name"
+                  required
+                  :rules="[(v) => !!v || 'Nume client este obligatoriu']"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="v-col-style"
+                ><label class="label-class">Serviciu</label>
+                <v-text-field
+                  v-model="formData.typeOfActivity"
+                  required
+                  :rules="[(v) => !!v || 'Serviciu este obligatoriu']"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="v-col-style"
+                ><label class="label-class">Stilist</label>
+                <v-select
+                  v-model="formData.resourceId"
+                  required
+                  :items="employees"
+                  item-title="name"
+                  :rules="[(v) => !!v || 'Stilist este obligatoriu']"
+                  item-value="id"
+                  variant="outlined"
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12"
+                ><label class="label-class">Data start</label>
+                <VueDatePicker
+                  required
+                  v-model="formData.startTime"
+                  :format="'dd/MM/yyyy - hh:mm'"
+                  :max-date="formData.endTime"
+                  :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                  v-bind:max-time="formData.endTime"
+                  class="form-field"
+                ></VueDatePicker>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12"
+                ><label class="label-class">Data final</label>
+                <VueDatePicker
+                  required
+                  v-model="formData.endTime"
+                  :format="'dd/MM/yyyy - hh:mm'"
+                  :min-date="formData.startTime"
+                  :rules="[(v) => !!v || 'Data de sfarsit este obligatorie']"
+                  v-bind:min-time="formData.startTime"
+                  class="form-field"
+                ></VueDatePicker>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="close()">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="addBooking()">Save</v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click="addBooking()"
+          :disabled="!valid"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -85,6 +97,7 @@ export default {
   data() {
     return {
       dialog: true,
+      valid: false,
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       employees: [],
       formData: {
@@ -115,6 +128,13 @@ export default {
 };
 </script>
 <style scoped>
+.label-class {
+  font-size: 13px;
+  color: grey;
+}
+.v-col-style {
+  margin-bottom: -30px;
+}
 @media (max-width: 600px) {
   .form-field {
     width: 100%;

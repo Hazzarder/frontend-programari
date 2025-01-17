@@ -1,6 +1,10 @@
 <template>
-  <h1 class="mt-5 ml-3">Angajati</h1>
-  <v-btn @click="modalIsOpen = true" color="primary">Adauga angajat</v-btn>
+  <div class="bookings">
+    <h1 class="mt-5 ml-3">Angajati</h1>
+    <v-btn @click="modalIsOpen = true" color="primary" class="mr-3 mt-5"
+      >Adauga angajat</v-btn
+    >
+  </div>
   <AddEditEmployee
     v-if="modalIsOpen"
     @close-and-refresh-empolyees="closeDialog()"
@@ -26,13 +30,13 @@
     <tbody>
       <tr v-for="employee in employees" :key="employee.id">
         <td>{{ employee.name }}</td>
-        <td>{{ employee.email }}</td>
+        <!-- <td>{{ employee.email }}</td> -->
         <td>
-          <v-icon
+          <!-- <v-icon
             @click="openEditModal(employee.id, employee.name)"
             color="primary"
             >mdi-pencil</v-icon
-          >
+          > -->
           <v-icon @click="deleteEmployee(employee.id)" color="error"
             >mdi-delete</v-icon
           >
@@ -60,7 +64,7 @@ export default {
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       tableColumns: [
         { text: "Name", value: "name" },
-        { text: "Email", value: "email" },
+        // { text: "Email", value: "email" },
         { text: "Actions", value: "actions" },
       ],
     };
@@ -97,5 +101,10 @@ export default {
   font-weight: bold;
   color: #00ca98;
   background-color: #fafafa;
+}
+.bookings {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

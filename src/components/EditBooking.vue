@@ -1,58 +1,71 @@
 <template>
   <v-dialog v-model="isOpen" max-width="600px">
     <v-card>
-      <v-card-title>Editeaza programare</v-card-title>
+      <v-card-title class="text-center">Editeaza programare</v-card-title>
       <v-btn color="error" @click="deleteBooking()">Sterge Programare</v-btn>
       <v-card-text>
-        <v-form>
-          <v-row
-            ><v-col
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-row>
+            <v-col class="v-col-style">
+              <label class="label-class">Nume client</label
               ><v-text-field
+                variant="outlined"
                 v-model="formData.name"
-                label="Name"
-                variant="outlined"
-              ></v-text-field></v-col
+                :rules="[(v) => !!v || 'Name is required']"
+                required
+              ></v-text-field> </v-col
           ></v-row>
-          <v-row
-            ><v-col
-              ><v-text-field
+          <v-row>
+            <v-col class="v-col-style">
+              <label class="label-class">Serviciu</label>
+              <v-text-field
+                variant="outlined"
                 v-model="formData.typeOfActivity"
-                label="Type of Activity"
-                variant="outlined"
-              ></v-text-field></v-col
+                :rules="[(v) => !!v || 'Type of Activity is required']"
+                required
+              ></v-text-field> </v-col
           ></v-row>
-          <v-row
-            ><v-col
+          <v-row>
+            <v-col class="v-col-style">
+              <label class="label-class">Stilist</label
               ><v-select
+                variant="outlined"
                 v-model="formData.resourceId"
                 :items="employees"
                 item-title="name"
-                item-value="id"
-                label="Resource"
-                variant="outlined"
-              ></v-select></v-col
+                :rules="[(v) => !!v || 'Resource is required']"
+                required
+              ></v-select> </v-col
           ></v-row>
           <v-row
-            ><v-col
-              ><VueDatePicker
+            ><v-col>
+              <label class="label-class">Data start</label>
+              <VueDatePicker
                 v-model="formData.startTime"
                 :format="'dd/MM/yyyy - hh:mm'"
+                :rules="[(v) => !!v || 'Start Time is required']"
+                required
                 :max-date="formData.endTime"
-              ></VueDatePicker></v-col
+              ></VueDatePicker> </v-col
           ></v-row>
           <v-row
-            ><v-col
-              ><VueDatePicker
+            ><v-col>
+              <label class="label-class">Data final</label>
+              <VueDatePicker
                 v-model="formData.endTime"
                 :min-date="formData.startTime"
+                :rules="[(v) => !!v || 'End Time is required']"
+                required
                 :format="'dd/MM/yyyy - hh:mm'"
-              ></VueDatePicker></v-col
+              ></VueDatePicker> </v-col
           ></v-row>
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click="save">Save</v-btn>
-        <v-btn @click="close">Cancel</v-btn>
+        <v-btn color="blue darken-1" @click="close">Cancel</v-btn>
+        <v-btn color="blue darken-1" @click="save" :disabled="!valid"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -72,6 +85,7 @@ export default {
   data() {
     return {
       isOpen: true,
+      valid: false,
       employees: [],
       formData: {
         name: "",
@@ -125,3 +139,12 @@ export default {
   },
 };
 </script>
+<style>
+.label-class {
+  font-size: 13px;
+  color: grey;
+}
+.v-col-style {
+  margin-bottom: -30px;
+}
+</style>
