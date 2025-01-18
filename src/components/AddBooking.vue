@@ -43,11 +43,12 @@
             </v-row>
             <v-row>
               <v-col cols="12"
-                ><label class="label-class">Data start</label>
+                ><label class="label-class">Data programare</label>
                 <VueDatePicker
                   required
-                  v-model="formData.startTime"
-                  :format="'dd/MM/yyyy - hh:mm'"
+                  :enable-time-picker="false"
+                  v-model="formData.bookingDate"
+                  :format="'dd/MM/yyyy'"
                   :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
                   class="form-field"
                 ></VueDatePicker>
@@ -55,12 +56,16 @@
             </v-row>
             <v-row>
               <v-col cols="12"
-                ><label class="label-class">Data final</label>
+                ><label class="label-class">Ora programare</label>
                 <VueDatePicker
                   required
-                  v-model="formData.endTime"
-                  :format="'dd/MM/yyyy - hh:mm'"
-                  :rules="[(v) => !!v || 'Data de sfarsit este obligatorie']"
+                  time-picker
+                  range
+                  :min-time="{ hours: 7 }"
+                  :max-time="{ hours: 22 }"
+                  v-model="formData.bookingRange"
+                  :format="'hh:mm'"
+                  :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
                   class="form-field"
                 ></VueDatePicker>
               </v-col>
@@ -86,6 +91,7 @@
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PocketBase from "pocketbase";
+import { format, startOfDay, endOfDay, parseISO } from "date-fns";
 export default {
   components: {
     VueDatePicker,
@@ -100,8 +106,8 @@ export default {
         name: "",
         typeOfActivity: "",
         resourceId: "",
-        startTime: "",
-        endTime: "",
+        bookingDate: new Date(),
+        bookingRange: "",
       },
     };
   },
@@ -113,8 +119,46 @@ export default {
     close() {
       this.$emit("close");
     },
-    addBooking() {
-      this.pb.collection("bookings").create(this.formData);
+    async addBooking() {
+      const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
+      const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
+      const end = `${bookingDate} ${this.formData.bookingRange[1].hours}:${this.formData.bookingRange[1].minutes}:00`;
+
+      const date = new Date(bookingDate);
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const stylistBookings = await this.pb.collection("bookings").getFullList({
+        filter: `resourceId = '${
+          this.formData.resourceId
+        }' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
+      });
+
+      const newBookingStartTime = new Date(start).getTime();
+      const newBookingEndTime = new Date(end).getTime();
+
+      for (const booking of stylistBookings) {
+        const bookingStart = new Date(booking.startTime).getTime();
+        const bookingEnd = new Date(booking.endTime).getTime();
+
+        if (
+          newBookingStartTime < bookingEnd &&
+          newBookingEndTime > bookingStart
+        ) {
+          alert("Stilistul este ocupat in aceasta perioada");
+          return;
+        }
+      }
+      const booking = {
+        name: this.formData.name,
+        typeOfActivity: this.formData.typeOfActivity,
+        resourceId: this.formData.resourceId,
+        startTime: start,
+        endTime: end,
+      };
+      await this.pb.collection("bookings").create(booking);
       this.close();
     },
   },

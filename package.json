@@ -17,6 +17,7 @@
     "@fullcalendar/vue3": "^6.1.15",
     "@mdi/font": "7.4.47",
     "@vuepic/vue-datepicker": "^11.0.1",
+    "date-fns": "^4.1.0",
     "pocketbase": "^0.25.0",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
