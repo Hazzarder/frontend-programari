@@ -85,16 +85,25 @@ export default {
       const records = await this.pb.collection("bookings").getFullList({
         filter: `startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
       });
-      this.calendarOptions.events = records.map((record) => ({
-        id: record.id,
-        resourceId: record.resourceId,
-        resId: record.resourceId,
-        bookingId: record.id,
-        title: record.name,
-        typeOfActivity: record.typeOfActivity,
-        start: record.startTime,
-        end: record.endTime,
-      }));
+
+      this.calendarOptions.events = records.map((record) => {
+        const startTime = new Date(record.startTime);
+        const endTime = new Date(record.endTime);
+
+        startTime.setHours(startTime.getHours() - 2);
+        endTime.setHours(endTime.getHours() - 2);
+
+        return {
+          id: record.id,
+          resourceId: record.resourceId,
+          resId: record.resourceId,
+          bookingId: record.id,
+          title: record.name,
+          typeOfActivity: record.typeOfActivity,
+          start: startTime.toISOString(),
+          end: endTime.toISOString(),
+        };
+      });
     },
     async getResources() {
       const records = await this.pb.collection("employees").getFullList({});

@@ -107,7 +107,7 @@ export default {
         typeOfActivity: "",
         resourceId: "",
         bookingDate: new Date(),
-        bookingRange: "",
+        bookingRange: [new Date(), new Date()],
       },
     };
   },
@@ -119,6 +119,7 @@ export default {
     close() {
       this.$emit("close");
     },
+
     async addBooking() {
       const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
       const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
@@ -140,8 +141,8 @@ export default {
       const newBookingEndTime = new Date(end).getTime();
 
       for (const booking of stylistBookings) {
-        const bookingStart = new Date(booking.startTime).getTime();
-        const bookingEnd = new Date(booking.endTime).getTime();
+        const bookingStart = new Date(booking.startTime).getTime() - 7200000;
+        const bookingEnd = new Date(booking.endTime).getTime() - 7200000;
 
         if (
           newBookingStartTime < bookingEnd &&
@@ -158,6 +159,7 @@ export default {
         startTime: start,
         endTime: end,
       };
+
       await this.pb.collection("bookings").create(booking);
       this.close();
     },
