@@ -38,28 +38,35 @@
                 required
               ></v-select> </v-col
           ></v-row>
-          <v-row
-            ><v-col>
-              <label class="label-class">Data start</label>
+          <v-row>
+            <v-col cols="12"
+              ><label class="label-class">Data programare</label>
               <VueDatePicker
-                v-model="formData.startTime"
-                :format="'dd/MM/yyyy - hh:mm'"
-                :rules="[(v) => !!v || 'Start Time is required']"
                 required
-                :max-date="formData.endTime"
-              ></VueDatePicker> </v-col
-          ></v-row>
-          <v-row
-            ><v-col>
-              <label class="label-class">Data final</label>
+                :enable-time-picker="false"
+                v-model="formData.bookingDate"
+                :format="'dd/MM/yyyy'"
+                :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                class="form-field"
+              ></VueDatePicker>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12"
+              ><label class="label-class">Ora programare</label>
               <VueDatePicker
-                v-model="formData.endTime"
-                :min-date="formData.startTime"
-                :rules="[(v) => !!v || 'End Time is required']"
                 required
-                :format="'dd/MM/yyyy - hh:mm'"
-              ></VueDatePicker> </v-col
-          ></v-row>
+                time-picker
+                range
+                :min-time="{ hours: 7 }"
+                :max-time="{ hours: 22 }"
+                v-model="formData.bookingRange"
+                :format="'hh:mm'"
+                :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                class="form-field"
+              ></VueDatePicker>
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -92,8 +99,8 @@ export default {
         name: "",
         resourceId: "",
         typeOfActivity: "",
-        startTime: null,
-        endTime: null,
+        bookingDate: new Date(),
+        bookingRange: [new Date(), new Date()],
       },
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
@@ -107,8 +114,8 @@ export default {
             id: newVal.extendedProps.bookingId,
             name: newVal.title,
             typeOfActivity: newVal.extendedProps.typeOfActivity,
-            startTime: newVal.start,
-            endTime: newVal.end,
+            bookingRange: [new Date(newVal.start), new Date(newVal.end)],
+            bookingDate: new Date(newVal.start).format("yyyy-MM-dd"),
             resourceId: newVal.extendedProps.resId,
           };
           this.isOpen = true;
