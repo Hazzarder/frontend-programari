@@ -3,7 +3,7 @@
     <v-container>
       <div>
         <h1 class="text-center">Login</h1>
-        <v-form v-model="valid">
+        <v-form v-model="valid" @submit.prevent="handleLogin">
           <v-row>
             <v-col cols="12">
               <v-text-field
@@ -29,7 +29,7 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-btn @click="login" color="primary">Login</v-btn>
+              <v-btn type="submit" color="primary">Login</v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import PocketBase from "pocketbase";
+import { mapActions } from "vuex";
 export default {
   name: "Login",
   data() {
@@ -48,20 +48,15 @@ export default {
         email: "",
         password: "",
       },
-      pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
   },
   methods: {
-    async login() {
+    ...mapActions(["login"]),
+    async handleLogin() {
       try {
-        const authData = await this.pb
-          .collection("users")
-          .authWithPassword(this.form.email, this.form.password);
-
-        this.$router.push("/bookings");
-        // Handle successful login, e.g., redirect to another page
+        const resp = await this.login(this.form);
       } catch (error) {
-        // Handle login failure, e.g., show an error message
+        console.error("Login failed:", error);
       }
     },
   },

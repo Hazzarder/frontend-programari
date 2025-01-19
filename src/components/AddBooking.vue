@@ -91,7 +91,7 @@
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PocketBase from "pocketbase";
-import { format, startOfDay, endOfDay, parseISO } from "date-fns";
+import { format } from "date-fns";
 export default {
   components: {
     VueDatePicker,
@@ -124,7 +124,7 @@ export default {
       const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
       const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
       const end = `${bookingDate} ${this.formData.bookingRange[1].hours}:${this.formData.bookingRange[1].minutes}:00`;
-
+      console.log(this.formData.bookingRange);
       const date = new Date(bookingDate);
       const startOfDay = new Date(date);
       startOfDay.setHours(0, 0, 0, 0);

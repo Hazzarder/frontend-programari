@@ -83,6 +83,7 @@
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PocketBase from "pocketbase";
+import { format } from "date-fns";
 export default {
   components: {
     VueDatePicker,
@@ -99,8 +100,8 @@ export default {
         name: "",
         resourceId: "",
         typeOfActivity: "",
-        bookingDate: new Date(),
-        bookingRange: [new Date(), new Date()],
+        bookingDate: "",
+        bookingRange: [{}, {}],
       },
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
@@ -114,10 +115,22 @@ export default {
             id: newVal.extendedProps.bookingId,
             name: newVal.title,
             typeOfActivity: newVal.extendedProps.typeOfActivity,
-            bookingRange: [new Date(newVal.start), new Date(newVal.end)],
-            bookingDate: new Date(newVal.start).format("yyyy-MM-dd"),
+            bookingDate: newVal.start,
             resourceId: newVal.extendedProps.resId,
+            bookingRange: [
+              {
+                hours: newVal.start.getHours(),
+                minutes: newVal.start.getMinutes(),
+                seconds: newVal.start.getSeconds(),
+              },
+              {
+                hours: newVal.end.getHours(),
+                minutes: newVal.end.getMinutes(),
+                seconds: newVal.end.getSeconds(),
+              },
+            ],
           };
+          console.log("formData:", this.formData);
           this.isOpen = true;
         }
       },
@@ -129,9 +142,48 @@ export default {
       this.$emit("close");
     },
     async save() {
-      await this.pb
-        .collection("bookings")
-        .update(this.formData.id, this.formData);
+      const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
+      const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
+      const end = `${bookingDate} ${this.formData.bookingRange[1].hours}:${this.formData.bookingRange[1].minutes}:00`;
+      const date = new Date(bookingDate);
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const stylistBookings = await this.pb.collection("bookings").getFullList({
+        filter: `resourceId = '${
+          this.formData.resourceId
+        }' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}' && id != '${
+          this.formData.id
+        }'`,
+      });
+
+      const newBookingStartTime = new Date(start).getTime();
+      const newBookingEndTime = new Date(end).getTime();
+
+      for (const booking of stylistBookings) {
+        const bookingStart = new Date(booking.startTime).getTime() - 7200000;
+        const bookingEnd = new Date(booking.endTime).getTime() - 7200000;
+
+        if (
+          newBookingStartTime < bookingEnd &&
+          newBookingEndTime > bookingStart
+        ) {
+          alert("Stilistul este ocupat in aceasta perioada");
+          return;
+        }
+      }
+
+      const booking = {
+        name: this.formData.name,
+        typeOfActivity: this.formData.typeOfActivity,
+        resourceId: this.formData.resourceId,
+        startTime: start,
+        endTime: end,
+      };
+
+      await this.pb.collection("bookings").update(this.formData.id, booking);
       this.$emit("close");
     },
     async getEmployees() {

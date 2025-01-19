@@ -10,6 +10,7 @@ import { routes } from "vue-router/auto-routes";
 import Login from "../components/Login.vue";
 import Bookings from "../components/Bookings.vue";
 import Employees from "../components/Employees.vue";
+import Users from "../components/Users.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,14 @@ const router = createRouter({
       path: "/employees",
       name: "employees",
       component: Employees,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/accounts",
+      name: "accounts",
+      component: Users,
       meta: {
         requiresAuth: true,
       },
