@@ -48,6 +48,7 @@ export default {
         email: "",
         password: "",
       },
+      valid: false,
     };
   },
   methods: {
@@ -55,8 +56,13 @@ export default {
     async handleLogin() {
       try {
         const resp = await this.login(this.form);
-      } catch (error) {
-        console.error("Login failed:", error);
+        if (resp === "error") {
+          alert("Invalid credentials");
+        } else {
+          this.$router.push("/bookings");
+        }
+      } catch (e) {
+        console.error(e);
       }
     },
   },

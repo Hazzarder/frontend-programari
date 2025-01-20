@@ -11,6 +11,9 @@
         <p class="nav-bar-link" @click="this.$router.push('/accounts')">
           Conturi de access
         </p>
+        <p class="nav-bar-link" @click="this.$router.push('/workPoints')">
+          Puncte de lucru
+        </p>
         <v-spacer></v-spacer>
         <v-btn @click="logout">Logout</v-btn>
       </v-app-bar>
@@ -20,8 +23,6 @@
 </template>
 
 <script>
-import { is } from "date-fns/locale";
-
 export default {
   name: "App",
   methods: {
@@ -33,9 +34,13 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      console.log(this.$store.getters.isLoggedIn);
-      return this.$store.getters.isLoggedIn;
+      return this.$store.getters.isAuthenticated;
     },
+  },
+  created() {
+    if (!this.$store.getters.isAuthenticated) {
+      this.$router.push("/login");
+    }
   },
 };
 </script>

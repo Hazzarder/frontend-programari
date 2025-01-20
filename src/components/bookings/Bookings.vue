@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import AddBooking from "./AddBooking.vue";
-import EditBooking from "./EditBooking.vue";
+import AddBooking from "./bookings/AddBooking.vue";
+import EditBooking from "./bookings/EditBooking.vue";
 import PocketBase from "pocketbase";
 import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";

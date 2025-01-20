@@ -1,4 +1,4 @@
-<template>asdasdasd</template>
+<template></template>
 
 <script setup>
 //

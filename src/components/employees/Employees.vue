@@ -25,7 +25,7 @@
       <tr v-for="employee in employees" :key="employee.id">
         <td>{{ employee.name }}</td>
         <td>{{ employee.hasAccessAccount ? "Da" : "Nu" }}</td>
-
+        <td>{{ getWorkPointName(employee.workPoint) }}</td>
         <td>
           <v-icon @click="deleteEmployee(employee.id)" color="error"
             >mdi-delete</v-icon
@@ -48,11 +48,13 @@ export default {
       editModalIsOpen: false,
       selectedId: "",
       selectedEmployeeName: "",
+      workPoints: [],
       employees: [],
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       tableColumns: [
         { text: "Name", value: "name" },
         { text: "Cont acces", value: "accessAccount" },
+        { text: "Punct de lucru", value: "workPoint" },
         { text: "Actions", value: "actions" },
       ],
     };
@@ -64,6 +66,13 @@ export default {
     async deleteEmployee(id) {
       await this.pb.collection("employees").delete(id);
       this.getEmployees();
+    },
+    async getWorkPoints() {
+      this.workPoints = await this.pb.collection("workPoints").getFullList({});
+    },
+    getWorkPointName(id) {
+      const workPoint = this.workPoints.find((wp) => wp.id === id);
+      return workPoint ? workPoint.name : "N/A";
     },
     openEditModal(id, name) {
       this.editModalIsOpen = true;
@@ -80,6 +89,7 @@ export default {
     },
   },
   mounted() {
+    this.getWorkPoints();
     this.getEmployees();
   },
 };

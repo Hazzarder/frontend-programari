@@ -11,7 +11,19 @@
                 label="Name"
                 variant="outlined"
               ></v-text-field>
-            </v-col>
+            </v-col> </v-row
+          ><v-row>
+            <v-col cols="12">
+              <v-select
+                v-model="formData.workPoint"
+                :items="workPoints"
+                item-title="name"
+                item-value="id"
+                label="Punct de lucru"
+                variant="outlined"
+              >
+              </v-select
+            ></v-col>
           </v-row>
         </v-container>
       </v-card-text>
@@ -29,7 +41,7 @@ export default {
   data() {
     return {
       dialog: true,
-      formTitle: "",
+      workPoints: [],
       formData: {
         name: "",
       },
@@ -37,6 +49,9 @@ export default {
     };
   },
   methods: {
+    async getWorkPoints() {
+      this.workPoints = await this.pb.collection("workPoints").getFullList({});
+    },
     async addEmployee() {
       this.formTitle = "Add Employee";
       if (this.formTitle === "Add Employee") {
@@ -55,6 +70,9 @@ export default {
     async save() {
       this.$emit("close-and-refresh-empolyees");
     },
+  },
+  mounted() {
+    this.getWorkPoints();
   },
 };
 </script>

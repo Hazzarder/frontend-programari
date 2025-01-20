@@ -8,9 +8,10 @@
 import { createRouter, createWebHistory } from "vue-router/auto";
 import { routes } from "vue-router/auto-routes";
 import Login from "../components/Login.vue";
-import Bookings from "../components/Bookings.vue";
-import Employees from "../components/Employees.vue";
-import Users from "../components/Users.vue";
+import Bookings from "../components/bookings/Bookings.vue";
+import Employees from "../components/employees/Employees.vue";
+import Users from "../components/users/Users.vue";
+import WorkPoints from "../components/workpoints/WorkPoints.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,14 @@ const router = createRouter({
       path: "/accounts",
       name: "accounts",
       component: Users,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/workPoints",
+      name: "workPoints",
+      component: WorkPoints,
       meta: {
         requiresAuth: true,
       },

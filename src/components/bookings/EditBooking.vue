@@ -130,7 +130,6 @@ export default {
               },
             ],
           };
-          console.log("formData:", this.formData);
           this.isOpen = true;
         }
       },
