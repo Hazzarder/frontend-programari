@@ -16,12 +16,10 @@ const actions = {
       const authData = await pb
         .collection("users")
         .authWithPassword(email, password);
-
       if (authData.token) {
         localStorage.setItem("pocketbase_auth", JSON.stringify(authData));
         await commit("setToken", authData.token);
         await commit("setUser", authData.record);
-
         return authData;
       }
     } catch (error) {
@@ -41,9 +39,11 @@ const mutations = {
     state.token = null;
   },
   setUser: (state, user) => {
+    console.log(user);
     state.user = user;
   },
   setToken: (state, token) => {
+    console.log(token);
     state.token = token;
   },
 };

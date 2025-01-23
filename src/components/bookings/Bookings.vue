@@ -42,6 +42,7 @@ export default {
         plugins: [resourceTimelinePlugin, interactionPlugin],
         resources: [],
         events: [],
+        resourceGroupField: "workPointName",
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         slotLabelFormat: {
           hour: "2-digit",
@@ -85,6 +86,21 @@ export default {
       const records = await this.pb.collection("bookings").getFullList({
         filter: `startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
       });
+      const uniqueResources = new Set();
+      records.forEach((record) =>
+        uniqueResources.add({
+          id: record.resourceId,
+          title: record.resourceName,
+          workPointName: record.workPointName,
+        })
+      );
+      this.calendarOptions.resources = Array.from(uniqueResources).map(
+        (resource) => ({
+          id: resource.id,
+          title: resource.title,
+          workPointName: resource.workPointName,
+        })
+      );
 
       this.calendarOptions.events = records.map((record) => {
         const startTime = new Date(record.startTime);
@@ -104,14 +120,6 @@ export default {
           end: endTime.toISOString(),
         };
       });
-    },
-    async getResources() {
-      const records = await this.pb.collection("employees").getFullList({});
-
-      this.calendarOptions.resources = records.map((record) => ({
-        id: record.id,
-        title: record.name,
-      }));
     },
     handleDatesSet(info) {
       this.date = info.start;
@@ -133,10 +141,6 @@ export default {
       this.getBookings(this.date);
     },
   },
-  mounted() {
-    this.getBookings(this.date);
-    this.getResources();
-  },
 };
 </script>
 <style scoped>
@@ -152,5 +156,10 @@ export default {
   padding: 5px;
   white-space: normal;
   word-wrap: break-word;
+}
+@media screen and (min-width: 600px) {
+  .full-calendar {
+    height: 700px; /* Height for smaller screens */
+  }
 }
 </style>

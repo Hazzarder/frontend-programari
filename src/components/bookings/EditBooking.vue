@@ -59,7 +59,7 @@
                 time-picker
                 range
                 :min-time="{ hours: 7 }"
-                :max-time="{ hours: 22 }"
+                :max-time="{ hours: 23 }"
                 v-model="formData.bookingRange"
                 :format="'hh:mm'"
                 :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
@@ -178,6 +178,15 @@ export default {
         name: this.formData.name,
         typeOfActivity: this.formData.typeOfActivity,
         resourceId: this.formData.resourceId,
+        resourceName: this.employees.find(
+          (employee) => employee.id === this.formData.resourceId
+        ).name,
+        workPoint: this.employees.find(
+          (employee) => employee.id === this.formData.resourceId
+        ).workPoint,
+        workPointName: this.employees.find(
+          (employee) => employee.id === this.formData.resourceId
+        ).workPointName,
         startTime: start,
         endTime: end,
       };

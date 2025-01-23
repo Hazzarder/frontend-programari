@@ -44,6 +44,8 @@ export default {
       workPoints: [],
       formData: {
         name: "",
+        workPoint: "",
+        workPointName: "",
       },
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
@@ -53,15 +55,15 @@ export default {
       this.workPoints = await this.pb.collection("workPoints").getFullList({});
     },
     async addEmployee() {
-      this.formTitle = "Add Employee";
-      if (this.formTitle === "Add Employee") {
-        await this.pb
-          .collection("employees")
-          .create(this.formData)
-          .then(() => {
-            this.close();
-          });
-      }
+      this.formData.workPointName = this.workPoints.find(
+        (wp) => wp.id === this.formData.workPoint
+      ).name;
+      await this.pb
+        .collection("employees")
+        .create(this.formData)
+        .then(() => {
+          this.close();
+        });
     },
 
     close() {

@@ -6,7 +6,6 @@
 
 // Composables
 import { createRouter, createWebHistory } from "vue-router/auto";
-import { routes } from "vue-router/auto-routes";
 import Login from "../components/Login.vue";
 import Bookings from "../components/bookings/Bookings.vue";
 import Employees from "../components/employees/Employees.vue";

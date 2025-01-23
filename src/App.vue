@@ -1,30 +1,20 @@
 <template>
   <v-app>
     <v-main>
-      <v-app-bar app color="#00ca98" v-if="isLoggedIn">
-        <p class="nav-bar-link" @click="this.$router.push('/employees')">
-          Angajati
-        </p>
-        <p class="nav-bar-link" @click="this.$router.push('/bookings')">
-          Programari
-        </p>
-        <p class="nav-bar-link" @click="this.$router.push('/accounts')">
-          Conturi de access
-        </p>
-        <p class="nav-bar-link" @click="this.$router.push('/workPoints')">
-          Puncte de lucru
-        </p>
-        <v-spacer></v-spacer>
-        <v-btn @click="logout">Logout</v-btn>
-      </v-app-bar>
+      <Header @logoutAction="this.logout()" />
+
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import Header from "./components/Header.vue";
 export default {
   name: "App",
+  components: {
+    Header,
+  },
   methods: {
     logout() {
       localStorage.removeItem("pocketbase_auth");
