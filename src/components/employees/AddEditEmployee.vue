@@ -8,11 +8,17 @@
         <v-icon @click="close()" class="mt-3 mr-3">mdi-close</v-icon>
       </div>
       <v-tabs v-model="tab">
-        <v-tab value="one">Date Angajat</v-tab>
-        <v-tab value="two" :disabled="this.selectedEmployee === null"
+        <v-tab value="one" @click="setCurrentTab(tab)">Date Angajat</v-tab>
+        <v-tab
+          value="two"
+          :disabled="this.selectedEmployee === null"
+          @click="setCurrentTab(tab)"
           >Cont de access</v-tab
         >
-        <v-tab value="three" :disabled="this.selectedEmployee === null"
+        <v-tab
+          value="three"
+          :disabled="this.selectedEmployee === null"
+          @click="setCurrentTab(tab)"
           >Permisiuni</v-tab
         >
       </v-tabs>
@@ -48,7 +54,7 @@ export default {
     return {
       employeeData: this.selectedEmployee,
       dialog: true,
-      tab: "one",
+      tab: "",
       workPoints: [],
       formData: {
         name: "",
@@ -60,6 +66,10 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    setCurrentTab(tab) {
+      console.log(tab);
+      this.tab = tab;
     },
   },
 };
