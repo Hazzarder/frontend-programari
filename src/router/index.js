@@ -11,6 +11,8 @@ import Bookings from "../components/bookings/Bookings.vue";
 import Employees from "../components/employees/Employees.vue";
 import Users from "../components/users/Users.vue";
 import WorkPoints from "../components/workpoints/WorkPoints.vue";
+import Stocks from "../components/stocks/Stocks.vue";
+import UnitsOfMeasure from "../components/unitsOfMeasure/UnitsOfMeasure.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +53,22 @@ const router = createRouter({
       path: "/workPoints",
       name: "workPoints",
       component: WorkPoints,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/stocks",
+      name: "stocks",
+      component: Stocks,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/unitsOfMeasure",
+      name: "unitsOfMeasure",
+      component: UnitsOfMeasure,
       meta: {
         requiresAuth: true,
       },

@@ -60,6 +60,8 @@ export default {
         { text: "Programari", route: "/bookings" },
         { text: "Conturi de access", route: "/accounts" },
         { text: "Puncte de lucru", route: "/workPoints" },
+        { text: "Stocuri", route: "/stocks" },
+        { text: "Unitati de masura", route: "/unitsOfMeasure" },
       ],
     };
   },

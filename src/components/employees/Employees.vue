@@ -7,7 +7,8 @@
   </div>
   <AddEditEmployee
     v-if="modalIsOpen"
-    @close-and-refresh-empolyees="closeDialog()"
+    :selectedEmployee="null"
+    @close="closeDialog()"
   />
   <v-table>
     <thead>
@@ -24,13 +25,35 @@
     <tbody>
       <tr v-for="employee in employees" :key="employee.id">
         <td>{{ employee.name }}</td>
-        <td>{{ employee.hasAccessAccount ? "Da" : "Nu" }}</td>
         <td>{{ getWorkPointName(employee.workPoint) }}</td>
         <td>
-          <v-icon @click="deleteEmployee(employee.id)" color="error"
+          <v-icon
+            @click="employee.modalIsOpen = true"
+            color="primary"
+            class="mr-3"
+            >mdi-pencil</v-icon
+          >
+
+          <v-icon @click="employee.deleteModal = true" color="error"
             >mdi-delete</v-icon
           >
         </td>
+        <AddEditEmployee
+          v-if="employee.modalIsOpen"
+          :selectedEmployee="employee"
+          @close="
+            employee.modalIsOpen = false;
+            getEmployees();
+          "
+        />
+        <DeleteModal
+          :text="
+            'Esti sigur ca vrei sa stergi angajatul ' + employee.name + '?'
+          "
+          v-if="employee.deleteModal"
+          @yes="deleteEmployee(employee.id)"
+          @no="employee.deleteModal = false"
+        />
       </tr>
     </tbody>
   </v-table>
@@ -38,22 +61,20 @@
 <script>
 import PocketBase from "pocketbase";
 import AddEditEmployee from "./AddEditEmployee.vue";
+import DeleteModal from "../DeleteModal.vue";
 export default {
   components: {
     AddEditEmployee,
+    DeleteModal,
   },
   data() {
     return {
       modalIsOpen: false,
-      editModalIsOpen: false,
-      selectedId: "",
-      selectedEmployeeName: "",
       workPoints: [],
       employees: [],
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       tableColumns: [
         { text: "Name", value: "name" },
-        { text: "Cont acces", value: "accessAccount" },
         { text: "Punct de lucru", value: "workPoint" },
         { text: "Actions", value: "actions" },
       ],
@@ -74,17 +95,8 @@ export default {
       const workPoint = this.workPoints.find((wp) => wp.id === id);
       return workPoint ? workPoint.name : "N/A";
     },
-    openEditModal(id, name) {
-      this.editModalIsOpen = true;
-      this.selectedId = id;
-      this.selectedEmployeeName = name;
-    },
     closeDialog() {
       this.modalIsOpen = false;
-      this.getEmployees();
-    },
-    closeEditDialog() {
-      this.editModalIsOpen = false;
       this.getEmployees();
     },
   },

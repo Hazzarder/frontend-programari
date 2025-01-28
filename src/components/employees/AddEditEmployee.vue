@@ -1,80 +1,66 @@
 <template>
   <v-dialog v-model="dialog" max-width="500px">
     <v-card>
-      <v-card-title> Adauga angajat nou </v-card-title>
+      <div class="d-flex justify-space-between">
+        <v-card-title>
+          {{ selectedEmployee ? "Editare" : "Adaugare" }} angajat
+        </v-card-title>
+        <v-icon @click="close()" class="mt-3 mr-3">mdi-close</v-icon>
+      </div>
+      <v-tabs v-model="tab">
+        <v-tab value="one">Date Angajat</v-tab>
+        <v-tab value="two" :disabled="this.selectedEmployee === null"
+          >Cont de access</v-tab
+        >
+        <v-tab value="three" :disabled="this.selectedEmployee === null"
+          >Permisiuni</v-tab
+        >
+      </v-tabs>
+
       <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                v-model="formData.name"
-                label="Name"
-                variant="outlined"
-              ></v-text-field>
-            </v-col> </v-row
-          ><v-row>
-            <v-col cols="12">
-              <v-select
-                v-model="formData.workPoint"
-                :items="workPoints"
-                item-title="name"
-                item-value="id"
-                label="Punct de lucru"
-                variant="outlined"
-              >
-              </v-select
-            ></v-col>
-          </v-row>
-        </v-container>
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item value="one">
+            <EmployeeDetails :employee="this.employeeData" />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="two">
+            <EmployeeAccessAccount :employee="this.employeeData" />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="three">
+            <EmployeePermissions :employee="this.employeeData" />
+          </v-tabs-window-item>
+        </v-tabs-window>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="close()">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="addEmployee()">Save</v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 <script>
-import PocketBase from "pocketbase";
+import EmployeeDetails from "./EmployeeDetails.vue";
+import EmployeePermissions from "./EmployeePermissions.vue";
+import EmployeeAccessAccount from "./EmployeeAccessAccount.vue";
 export default {
+  props: ["selectedEmployee"],
+  components: {
+    EmployeeDetails,
+    EmployeePermissions,
+    EmployeeAccessAccount,
+  },
   data() {
     return {
+      employeeData: this.selectedEmployee,
       dialog: true,
+      tab: "one",
       workPoints: [],
       formData: {
         name: "",
         workPoint: "",
         workPointName: "",
       },
-      pb: new PocketBase("https://motzartiasi.pockethost.io"),
     };
   },
   methods: {
-    async getWorkPoints() {
-      this.workPoints = await this.pb.collection("workPoints").getFullList({});
-    },
-    async addEmployee() {
-      this.formData.workPointName = this.workPoints.find(
-        (wp) => wp.id === this.formData.workPoint
-      ).name;
-      await this.pb
-        .collection("employees")
-        .create(this.formData)
-        .then(() => {
-          this.close();
-        });
-    },
-
     close() {
-      this.$emit("close-and-refresh-empolyees");
+      this.$emit("close");
     },
-    async save() {
-      this.$emit("close-and-refresh-empolyees");
-    },
-  },
-  mounted() {
-    this.getWorkPoints();
   },
 };
 </script>
