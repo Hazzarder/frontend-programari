@@ -74,7 +74,7 @@ const router = createRouter({
       },
     },
     {
-      path: "/auth/confirm-verification/:token",
+      path: "/_/#/auth/confirm-verification/:token",
       name: "VerifyEmail",
       component: VerifyEmail,
     },
