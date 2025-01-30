@@ -10,7 +10,7 @@ import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import PocketBase from "pocketbase";
 
-const pb = new PocketBase("https://your-pocketbase-url.com"); // Replace with your PocketBase URL
+const pb = new PocketBase("https://motzartiasi.pockethost.io"); // Replace with your PocketBase URL
 const route = useRoute();
 const router = useRouter();
 
