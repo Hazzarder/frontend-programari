@@ -75,7 +75,6 @@ export default {
     if (this.employee) {
       this.formData = { ...this.employee };
     }
-    console.log(this.employee);
     this.getWorkPoints();
   },
 };

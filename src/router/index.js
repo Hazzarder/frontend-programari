@@ -13,7 +13,7 @@ import Users from "../components/users/Users.vue";
 import WorkPoints from "../components/workpoints/WorkPoints.vue";
 import Stocks from "../components/stocks/Stocks.vue";
 import UnitsOfMeasure from "../components/unitsOfMeasure/UnitsOfMeasure.vue";
-
+import VerifyEmail from "../components/VerifyEmail.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -73,10 +73,14 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: "/auth/confirm-verification/:token",
+      name: "VerifyEmail",
+      component: VerifyEmail,
+    },
   ],
 });
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {
   if (err?.message?.includes?.("Failed to fetch dynamically imported module")) {
     if (!localStorage.getItem("vuetify:dynamic-reload")) {

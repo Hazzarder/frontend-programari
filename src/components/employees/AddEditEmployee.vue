@@ -68,7 +68,6 @@ export default {
       this.$emit("close");
     },
     setCurrentTab(tab) {
-      console.log(tab);
       this.tab = tab;
     },
   },
