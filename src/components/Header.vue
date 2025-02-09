@@ -30,7 +30,7 @@
   <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
     <v-list>
       <v-list-item
-        v-for="link in links"
+        v-for="link in filteredLinks"
         :key="link.text"
         :to="link.route"
         @click="toggleDrawer"
@@ -50,22 +50,54 @@
 </template>
 
 <script>
+const authData = localStorage["pocketbase_auth"];
 export default {
   name: "Header",
   data() {
     return {
       drawer: false,
+      authData: authData ? JSON.parse(authData) : null,
       links: [
-        { text: "Angajati", route: "/employees" },
-        { text: "Programari", route: "/bookings" },
-        { text: "Conturi de access", route: "/accounts" },
-        { text: "Puncte de lucru", route: "/workPoints" },
-        { text: "Stocuri", route: "/stocks" },
-        { text: "Unitati de masura", route: "/unitsOfMeasure" },
+        {
+          text: "Programari",
+          route: "/bookings",
+          permission: "",
+        },
+        { text: "Stocuri", route: "/stocks", permission: "see_stocks_area" },
+        {
+          text: "Angajati",
+          route: "/employees",
+          permission: "see_employee_area",
+        },
+        {
+          text: "Puncte de lucru",
+          route: "/workPoints",
+          permission: "see_work_points_area",
+        },
+        {
+          text: "Unitati de masura",
+          route: "/unitsOfMeasure",
+          permission: "see_unit_measures_area",
+        },
       ],
     };
   },
   emits: ["logoutAction"],
+  computed: {
+    userPermissions() {
+      return this.authData.record.permissions.split(",");
+    },
+    filteredLinks() {
+      if (this.authData.record.admin === true) {
+        return this.links;
+      } else {
+        return this.links.filter(
+          (link) =>
+            !link.permission || this.userPermissions.includes(link.permission)
+        );
+      }
+    },
+  },
   methods: {
     toggleDrawer() {
       this.drawer = !this.drawer;

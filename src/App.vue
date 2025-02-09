@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <Header @logoutAction="this.logout()" />
+      <Header @logoutAction="this.logout()" v-if="isLoggedIn" />
 
       <router-view />
     </v-main>

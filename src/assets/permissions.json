@@ -1,1 +1,22 @@
-
+[
+  {
+    "key": "see_all_bookings",
+    "name": "See all bookings"
+  },
+  {
+    "key": "see_employee_area",
+    "name": "See employee area"
+  },
+  {
+    "key": "see_stocks_area",
+    "name": "See stocks area"
+  },
+  {
+    "key": "see_work_points_area",
+    "name": "See work points area"
+  },
+  {
+    "key": "see_unit_measures_area",
+    "name": "See units of measure area"
+  }
+]

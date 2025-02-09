@@ -27,7 +27,7 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="this.canSeeAllBookings">
               <v-col class="v-col-style"
                 ><label class="label-class">Stilist</label>
                 <v-select
@@ -86,6 +86,7 @@
   </v-dialog>
 </template>
 <script>
+const authData = localStorage["pocketbase_auth"];
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PocketBase from "pocketbase";
@@ -96,6 +97,7 @@ export default {
   },
   data() {
     return {
+      authData: authData ? JSON.parse(authData) : null,
       dialog: true,
       valid: false,
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
@@ -108,6 +110,20 @@ export default {
         bookingRange: [new Date(), new Date()],
       },
     };
+  },
+  computed: {
+    canSeeAllBookings() {
+      if (this.authData.record.admin === true) {
+        return true;
+      }
+      if (
+        this.authData.record.permissions.split(",").includes("see_all_bookings")
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   methods: {
     async getEmployees() {
@@ -149,18 +165,20 @@ export default {
           return;
         }
       }
+      const resource = this.canSeeAllBookings
+        ? this.formData.resourceId
+        : this.authData.record.id;
       const booking = {
         name: this.formData.name,
         typeOfActivity: this.formData.typeOfActivity,
-        resourceId: this.formData.resourceId,
+        resourceId: resource,
         resourceName: this.employees.find(
-          (employee) => employee.id === this.formData.resourceId
+          (employee) => employee.id === resource
         ).name,
-        workPoint: this.employees.find(
-          (employee) => employee.id === this.formData.resourceId
-        ).workPoint,
+        workPoint: this.employees.find((employee) => employee.id === resource)
+          .workPoint,
         workPointName: this.employees.find(
-          (employee) => employee.id === this.formData.resourceId
+          (employee) => employee.id === resource
         ).workPointName,
         startTime: start,
         endTime: end,
@@ -171,6 +189,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.canSeeAllBookings);
     this.getEmployees();
   },
 };
