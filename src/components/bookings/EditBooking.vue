@@ -219,6 +219,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.canSeeAllBookings);
     this.getEmployees();
   },
 };

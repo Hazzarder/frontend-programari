@@ -8,7 +8,7 @@
 
     <!-- Logo -->
     <v-toolbar-title>
-      <span class="font-weight-bold">MotzArt Programari</span>
+      <span class="font-weight-bold">MotzArt</span>
     </v-toolbar-title>
 
     <!-- Desktop Navigation Links -->
