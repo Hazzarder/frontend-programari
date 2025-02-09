@@ -25,7 +25,7 @@
                 required
               ></v-text-field> </v-col
           ></v-row>
-          <v-row>
+          <v-row v-if="this.canSeeAllBookings">
             <v-col class="v-col-style">
               <label class="label-class">Stilist</label
               ><v-select
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+const authData = localStorage["pocketbase_auth"];
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PocketBase from "pocketbase";
@@ -93,6 +94,7 @@ export default {
   },
   data() {
     return {
+      authData: authData ? JSON.parse(authData) : null,
       isOpen: true,
       valid: false,
       employees: [],
@@ -200,6 +202,20 @@ export default {
     },
     close() {
       this.$emit("close");
+    },
+  },
+  computed: {
+    canSeeAllBookings() {
+      if (this.authData.record.admin === true) {
+        return true;
+      }
+      if (
+        this.authData.record.permissions.split(",").includes("see_all_bookings")
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
   mounted() {
