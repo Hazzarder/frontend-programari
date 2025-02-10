@@ -61,6 +61,7 @@
                   required
                   time-picker
                   range
+                  auto-apply
                   v-model="formData.bookingRange"
                   :format="'hh:mm'"
                   :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
@@ -107,7 +108,10 @@ export default {
         typeOfActivity: "",
         resourceId: "",
         bookingDate: new Date(),
-        bookingRange: [new Date(), new Date()],
+        bookingRange: [
+          { hours: 9, minutes: 0 },
+          { hours: 9, minutes: 30 },
+        ],
       },
     };
   },
@@ -128,6 +132,12 @@ export default {
     },
   },
   methods: {
+    formatBookingRange(range) {
+      return range.map((time) => ({
+        hours: String(time.hours).padStart(2, "0"),
+        minutes: String(time.minutes).padStart(2, "0"),
+      }));
+    },
     async getEmployees() {
       const records = await this.pb.collection("employees").getFullList({});
       this.employees = records;
@@ -138,14 +148,14 @@ export default {
 
     async addBooking() {
       const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
-      const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
-      const end = `${bookingDate} ${this.formData.bookingRange[1].hours}:${this.formData.bookingRange[1].minutes}:00`;
+      const range = this.formatBookingRange(this.formData.bookingRange);
+      const start = `${bookingDate} ${range[0].hours}:${range[0].minutes}:00`;
+      const end = `${bookingDate} ${range[1].hours}:${range[1].minutes}:00`;
       const date = new Date(bookingDate);
       const startOfDay = new Date(date);
       startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date(date);
       endOfDay.setHours(23, 59, 59, 999);
-
       const stylistBookings = await this.pb.collection("bookings").getFullList({
         filter: `resourceId = '${
           this.formData.resourceId
@@ -170,7 +180,6 @@ export default {
       const resource = this.canSeeAllBookings
         ? this.formData.resourceId
         : this.authData?.record.id;
-      console.log(resource);
       const booking = {
         name: this.formData.name,
         typeOfActivity: this.formData.typeOfActivity,
@@ -186,13 +195,11 @@ export default {
         startTime: start,
         endTime: end,
       };
-
       await this.pb.collection("bookings").create(booking);
       this.close();
     },
   },
   mounted() {
-    console.log(this.canSeeAllBookings);
     this.getEmployees();
   },
 };
