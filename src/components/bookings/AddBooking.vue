@@ -170,6 +170,7 @@ export default {
       const resource = this.canSeeAllBookings
         ? this.formData.resourceId
         : this.authData?.record.id;
+      console.log(resource);
       const booking = {
         name: this.formData.name,
         typeOfActivity: this.formData.typeOfActivity,
