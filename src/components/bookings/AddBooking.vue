@@ -109,8 +109,8 @@ export default {
         resourceId: "",
         bookingDate: new Date(),
         bookingRange: [
-          { hours: 9, minutes: 0 },
-          { hours: 9, minutes: 30 },
+          { hours: 8, minutes: 0 },
+          { hours: 21, minutes: 59 },
         ],
       },
     };
