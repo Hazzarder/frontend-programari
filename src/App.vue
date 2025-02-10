@@ -27,11 +27,6 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
   },
-  created() {
-    if (!this.$store.getters.isAuthenticated) {
-      this.$router.push("/login");
-    }
-  },
 };
 </script>
 <style lang="scss">
