@@ -46,7 +46,7 @@
                 :enable-time-picker="false"
                 v-model="formData.bookingDate"
                 :format="'dd/MM/yyyy'"
-                :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                :rules="[(v) => !!v || 'Data este obligatorie']"
                 class="form-field"
               ></VueDatePicker>
             </v-col>
@@ -58,11 +58,9 @@
                 required
                 time-picker
                 range
-                :min-time="{ hours: 7 }"
-                :max-time="{ hours: 23 }"
+                auto-apply
                 v-model="formData.bookingRange"
-                :format="'hh:mm'"
-                :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                :format="'HH:mm'"
                 class="form-field"
               ></VueDatePicker>
             </v-col>
@@ -138,14 +136,22 @@ export default {
     },
   },
   methods: {
+    formatBookingRange(range) {
+      return range.map((time) => ({
+        hours: String(time.hours).padStart(2, "0"),
+        minutes: String(time.minutes).padStart(2, "0"),
+      }));
+    },
     async deleteBooking() {
       await this.pb.collection("bookings").delete(this.formData.id);
       this.$emit("close");
     },
+
     async save() {
       const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
-      const start = `${bookingDate} ${this.formData.bookingRange[0].hours}:${this.formData.bookingRange[0].minutes}:00`;
-      const end = `${bookingDate} ${this.formData.bookingRange[1].hours}:${this.formData.bookingRange[1].minutes}:00`;
+      const range = this.formatBookingRange(this.formData.bookingRange);
+      const start = `${bookingDate} ${range[0].hours}:${range[0].minutes}:00`;
+      const end = `${bookingDate} ${range[1].hours}:${range[1].minutes}:00`;
       const date = new Date(bookingDate);
       const startOfDay = new Date(date);
       startOfDay.setHours(0, 0, 0, 0);

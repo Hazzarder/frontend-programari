@@ -49,7 +49,7 @@
                   :enable-time-picker="false"
                   v-model="formData.bookingDate"
                   :format="'dd/MM/yyyy'"
-                  :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
+                  :rules="[(v) => !!v || 'Data este obligatorie']"
                   class="form-field"
                 ></VueDatePicker>
               </v-col>
@@ -64,7 +64,6 @@
                   auto-apply
                   v-model="formData.bookingRange"
                   :format="'HH:mm'"
-                  :rules="[(v) => !!v || 'Data de inceput este obligatorie']"
                   class="form-field"
                 ></VueDatePicker>
               </v-col>
