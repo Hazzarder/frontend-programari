@@ -85,15 +85,15 @@ export default {
   emits: ["logoutAction"],
   computed: {
     userPermissions() {
-      return this.authData.record.permissions.split(",");
+      return this.authData?.record.permissions.split(",");
     },
     filteredLinks() {
-      if (this.authData.record.admin === true) {
+      if (this.authData?.record.admin === true) {
         return this.links;
       } else {
         return this.links.filter(
           (link) =>
-            !link.permission || this.userPermissions.includes(link.permission)
+            !link.permission || this.userPermissions?.includes(link.permission)
         );
       }
     },

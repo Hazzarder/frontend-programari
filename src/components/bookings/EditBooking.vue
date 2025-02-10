@@ -206,11 +206,13 @@ export default {
   },
   computed: {
     canSeeAllBookings() {
-      if (this.authData.record.admin === true) {
+      if (this.authData?.record.admin === true) {
         return true;
       }
       if (
-        this.authData.record.permissions.split(",").includes("see_all_bookings")
+        this.authData?.record.permissions
+          .split(",")
+          ?.includes("see_all_bookings")
       ) {
         return true;
       } else {

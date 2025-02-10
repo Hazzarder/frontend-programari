@@ -19,7 +19,7 @@ const actions = {
       if (authData.token) {
         localStorage.setItem("pocketbase_auth", JSON.stringify(authData));
         await commit("setToken", authData.token);
-        await commit("setUser", authData.record);
+        await commit("setUser", authData?.record);
         return authData;
       }
     } catch (error) {

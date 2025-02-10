@@ -39,7 +39,7 @@ export default {
     setPermissionsFromBackend() {
       const backendPermissions = this.employee.permissions.split(",");
       this.permissions.forEach((permission) => {
-        permission.checked = backendPermissions.includes(permission.key);
+        permission.checked = backendPermissions?.includes(permission.key);
       });
     },
   },

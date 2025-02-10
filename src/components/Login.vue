@@ -27,11 +27,11 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn type="submit" color="primary">Login</v-btn>
-            </v-col>
-          </v-row>
+          <div class="text-center">
+            <v-btn type="submit" color="primary" class="justify-center"
+              >Login</v-btn
+            >
+          </div>
         </v-form>
       </div>
     </v-container>

@@ -126,13 +126,13 @@ export default {
   },
   computed: {
     userPermissions() {
-      return this.authData.record.permissions.split(",");
+      return this.authData?.record.permissions.split(",");
     },
     canSeeAllBookings() {
-      if (this.authData.record.admin === true) {
+      if (this.authData?.record.admin === true) {
         return true;
       } else {
-        return this.userPermissions.includes("see_all_bookings");
+        return this.userPermissions?.includes("see_all_bookings");
       }
     },
   },
@@ -145,12 +145,12 @@ export default {
       if (!this.canSeeAllBookings) {
         const records = await this.pb.collection("bookings").getFullList({
           filter: `startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}' && resourceId = '${
-            this.authData.record.id
+            this.authData?.record.id
           }'`,
         });
         this.employeeCalendarOptions.resources = [
           {
-            id: this.authData.record.id,
+            id: this.authData?.record.id,
             title: records[0]?.resourceName
               ? "Programari "
               : "Nu ai programari ",
@@ -238,7 +238,7 @@ export default {
 </script>
 <style scoped>
 .full-calendar {
-  height: 600px; /* Default height for larger screens */
+  height: 600px;
 }
 .bookings {
   display: flex;

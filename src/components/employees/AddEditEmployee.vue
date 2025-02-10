@@ -26,7 +26,10 @@
       <v-card-text>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="one">
-            <EmployeeDetails :employee="this.employeeData" />
+            <EmployeeDetails
+              :employee="this.employeeData"
+              @close="this.close()"
+            />
           </v-tabs-window-item>
           <v-tabs-window-item value="two">
             <EmployeeAccessAccount :employee="this.employeeData" />

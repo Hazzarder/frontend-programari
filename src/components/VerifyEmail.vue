@@ -16,12 +16,18 @@ const router = useRouter();
 
 onMounted(async () => {
   const token = route.params.token; // Get token from URL
+  console.log("Token:", token);
   if (!token) {
     return;
   }
   try {
-    await pb.collection("users").confirmVerification(token);
-    router.push("/login"); // Redirect user to login page
+    await pb
+      .collection("users")
+      .confirmVerification(token)
+      .then(() => {
+        console.log("Email verified successfully");
+        router.push("/login");
+      });
   } catch (error) {
     console.error("Verification failed:", error);
   }
