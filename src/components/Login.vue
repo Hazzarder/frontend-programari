@@ -66,6 +66,11 @@ export default {
       }
     },
   },
+  mounted() {
+    if (localStorage.getItem("pocketbase_auth")) {
+      this.$router.push("/bookings");
+    }
+  },
 };
 </script>
 <style scoped>
