@@ -9,11 +9,17 @@
 </template>
 
 <script>
+import PocketBase from "pocketbase";
 import Header from "./components/Header.vue";
 export default {
   name: "App",
   components: {
     Header,
+  },
+  data() {
+    return {
+      pb: new PocketBase("https://motzartiasi.pockethost.io"),
+    };
   },
   methods: {
     logout() {
@@ -21,6 +27,20 @@ export default {
       this.$store.dispatch("logout");
       this.$router.push("/login");
     },
+    async checkIfLoggedIn() {
+      try {
+        const loggedIn = await this.pb.collection("testlogin").getFullList({});
+        if (loggedIn.length === 0) {
+          this.logout();
+        }
+      } catch (error) {
+        console.error("Error checking login status:", error);
+        this.logout();
+      }
+    },
+  },
+  mounted() {
+    this.checkIfLoggedIn();
   },
   computed: {
     isLoggedIn() {

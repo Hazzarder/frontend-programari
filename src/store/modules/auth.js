@@ -39,11 +39,9 @@ const mutations = {
     state.token = null;
   },
   setUser: (state, user) => {
-    console.log(user);
     state.user = user;
   },
   setToken: (state, token) => {
-    console.log(token);
     state.token = token;
   },
 };

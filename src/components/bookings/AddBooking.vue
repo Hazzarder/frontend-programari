@@ -95,6 +95,7 @@ export default {
   components: {
     VueDatePicker,
   },
+  props: ["date"],
   data() {
     return {
       authData: authData ? JSON.parse(authData) : null,
@@ -106,7 +107,7 @@ export default {
         name: "",
         typeOfActivity: "",
         resourceId: "",
-        bookingDate: new Date(),
+        bookingDate: this.date,
         bookingRange: [
           { hours: 8, minutes: 0 },
           { hours: 21, minutes: 59 },

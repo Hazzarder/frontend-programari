@@ -16,7 +16,7 @@ const router = useRouter();
 
 onMounted(async () => {
   const token = route.params.token; // Get token from URL
-  console.log("Token:", token);
+
   if (!token) {
     return;
   }
@@ -25,7 +25,6 @@ onMounted(async () => {
       .collection("users")
       .confirmVerification(token)
       .then(() => {
-        console.log("Email verified successfully");
         router.push("/login");
       });
   } catch (error) {
