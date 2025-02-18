@@ -157,6 +157,9 @@ export default {
 
     async addBooking() {
       this.isLoading = true;
+      const resource = this.canSeeAllBookings
+        ? this.formData.resourceId
+        : this.authData?.record.id;
       try {
         const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
         const range = this.formatBookingRange(this.formData.bookingRange);
@@ -170,9 +173,7 @@ export default {
         const stylistBookings = await this.pb
           .collection("bookings")
           .getFullList({
-            filter: `resourceId = '${
-              this.formData.resourceId
-            }' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
+            filter: `resourceId = '${resource}' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
           });
 
         const newBookingStartTime = new Date(start).getTime();
@@ -191,9 +192,6 @@ export default {
             return;
           }
         }
-        const resource = this.canSeeAllBookings
-          ? this.formData.resourceId
-          : this.authData?.record.id;
         const booking = {
           name: this.formData.name,
           typeOfActivity: this.formData.typeOfActivity,
