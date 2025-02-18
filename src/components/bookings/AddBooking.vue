@@ -76,15 +76,23 @@
         <v-btn color="blue darken-1" text @click="close()">Cancel</v-btn>
         <v-btn
           color="blue darken-1"
-          text
           @click="addBooking()"
-          :disabled="!valid"
-          >Save</v-btn
+          :disabled="!valid || isLoading"
         >
+          <template v-if="isLoading">
+            <v-progress-circular
+              indeterminate
+              color="black"
+              size="20"
+            ></v-progress-circular>
+          </template>
+          <template v-else> Save </template>
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
+
 <script>
 const authData = localStorage["pocketbase_auth"];
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -100,6 +108,7 @@ export default {
     return {
       authData: authData ? JSON.parse(authData) : null,
       dialog: true,
+      isLoading: false,
       valid: false,
       pb: new PocketBase("https://motzartiasi.pockethost.io"),
       employees: [],
@@ -147,56 +156,66 @@ export default {
     },
 
     async addBooking() {
-      const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
-      const range = this.formatBookingRange(this.formData.bookingRange);
-      const start = `${bookingDate} ${range[0].hours}:${range[0].minutes}:00`;
-      const end = `${bookingDate} ${range[1].hours}:${range[1].minutes}:00`;
-      const date = new Date(bookingDate);
-      const startOfDay = new Date(date);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
-      const stylistBookings = await this.pb.collection("bookings").getFullList({
-        filter: `resourceId = '${
-          this.formData.resourceId
-        }' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
-      });
+      this.isLoading = true;
+      try {
+        const bookingDate = format(this.formData.bookingDate, "yyyy-MM-dd");
+        const range = this.formatBookingRange(this.formData.bookingRange);
+        const start = `${bookingDate} ${range[0].hours}:${range[0].minutes}:00`;
+        const end = `${bookingDate} ${range[1].hours}:${range[1].minutes}:00`;
+        const date = new Date(bookingDate);
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+        const stylistBookings = await this.pb
+          .collection("bookings")
+          .getFullList({
+            filter: `resourceId = '${
+              this.formData.resourceId
+            }' && startTime >= '${startOfDay.toISOString()}' && startTime <= '${endOfDay.toISOString()}'`,
+          });
 
-      const newBookingStartTime = new Date(start).getTime();
-      const newBookingEndTime = new Date(end).getTime();
+        const newBookingStartTime = new Date(start).getTime();
+        const newBookingEndTime = new Date(end).getTime();
 
-      for (const booking of stylistBookings) {
-        const bookingStart = new Date(booking.startTime).getTime() - 7200000;
-        const bookingEnd = new Date(booking.endTime).getTime() - 7200000;
+        for (const booking of stylistBookings) {
+          const bookingStart = new Date(booking.startTime).getTime() - 7200000;
+          const bookingEnd = new Date(booking.endTime).getTime() - 7200000;
 
-        if (
-          newBookingStartTime < bookingEnd &&
-          newBookingEndTime > bookingStart
-        ) {
-          alert("Stilistul este ocupat in aceasta perioada");
-          return;
+          if (
+            newBookingStartTime < bookingEnd &&
+            newBookingEndTime > bookingStart
+          ) {
+            alert("Stilistul este ocupat in aceasta perioada");
+            this.isLoading = false;
+            return;
+          }
         }
+        const resource = this.canSeeAllBookings
+          ? this.formData.resourceId
+          : this.authData?.record.id;
+        const booking = {
+          name: this.formData.name,
+          typeOfActivity: this.formData.typeOfActivity,
+          resourceId: resource,
+          resourceName: this.employees.find(
+            (employee) => employee.id === resource
+          ).name,
+          workPoint: this.employees.find((employee) => employee.id === resource)
+            .workPoint,
+          workPointName: this.employees.find(
+            (employee) => employee.id === resource
+          ).workPointName,
+          startTime: start,
+          endTime: end,
+        };
+        await this.pb.collection("bookings").create(booking);
+        this.close();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.isLoading = false;
       }
-      const resource = this.canSeeAllBookings
-        ? this.formData.resourceId
-        : this.authData?.record.id;
-      const booking = {
-        name: this.formData.name,
-        typeOfActivity: this.formData.typeOfActivity,
-        resourceId: resource,
-        resourceName: this.employees.find(
-          (employee) => employee.id === resource
-        ).name,
-        workPoint: this.employees.find((employee) => employee.id === resource)
-          .workPoint,
-        workPointName: this.employees.find(
-          (employee) => employee.id === resource
-        ).workPointName,
-        startTime: start,
-        endTime: end,
-      };
-      await this.pb.collection("bookings").create(booking);
-      this.close();
     },
   },
   mounted() {
@@ -204,6 +223,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .label-class {
   font-size: 13px;

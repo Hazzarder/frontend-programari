@@ -173,6 +173,7 @@ export default {
   },
   methods: {
     async getBookings(date) {
+      this.$refs.fullCalendar.getApi().gotoDate(this.date);
       const startOfDay = new Date(date);
       startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date(date);
@@ -252,12 +253,10 @@ export default {
     forwardDate() {
       this.date = new Date(this.date.setDate(this.date.getDate() + 1));
       this.getBookings(this.date);
-      this.$refs.fullCalendar.getApi().gotoDate(this.date);
     },
     previousDate() {
       this.date = new Date(this.date.setDate(this.date.getDate() - 1));
       this.getBookings(this.date);
-      this.$refs.fullCalendar.getApi().gotoDate(this.date);
     },
     openAddBookingModal() {
       this.isModalOpen = true;
