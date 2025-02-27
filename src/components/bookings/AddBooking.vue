@@ -61,6 +61,8 @@
                   required
                   time-picker
                   range
+                  minutes-increment="15"
+                  minutes-grid-increment="15"
                   auto-apply
                   v-model="formData.bookingRange"
                   :format="'HH:mm'"
@@ -119,7 +121,7 @@ export default {
         bookingDate: this.date,
         bookingRange: [
           { hours: 8, minutes: 0 },
-          { hours: 21, minutes: 59 },
+          { hours: 21, minutes: 0 },
         ],
       },
     };
