@@ -62,6 +62,8 @@
                 time-picker
                 range
                 auto-apply
+                minutes-increment="15"
+                minutes-grid-increment="15"
                 v-model="formData.bookingRange"
                 :format="'HH:mm'"
                 class="form-field"
